@@ -82,9 +82,9 @@ JNIEXPORT void JNICALL Java_com_kitchen_recognition_constant_Recognition_SendFra
     //然后解析传过来的frame中的数据
     jlong camID=env->GetLongField(frame,jcameraID);
     jobject fraID=env->GetObjectField(frame,jframeID);
-    jobject cimg=env->GetObjectField(frame,img);
+    jbyteArray cimg=(jbyteArray)env->GetObjectField(frame,img);
     
-    //不是很确定
+    
     char* frameID2=const_cast(char*)env->GetStringUTFChars(fraID,0);
     
     unsigned char* img2=env->GetByteArrayElements(cimg,0);
@@ -193,8 +193,8 @@ JNIEXPORT jobject JNICALL Java_com_kitchen_recognition_constant_Recognition_Send
     jobject jresdetect=env->FindClass(Cres,"Lcom/**/Cres");
     jfieldID jframeID=env->GetFieldID(jresdetect,"frameID","Ljava/lang/String;");
     jfieldID jcameraID=env->GetFieldID(jresdetect,"cameraID","J");
-    jfieldID jcrest=env->GetFieldID(jresdetect,"crest","[Ljava/lang/Object;");//传输结构体数组
-    jfieldID jpicarray=env->GetFieldID(jresdetect,"picarray","[Ljava/lang/Object;");
+    jfieldID jcrest=env->GetFieldID(jresdetect,"crest","[Lcom/***/rect;");//传输结构体数组
+    jfieldID jpicarray=env->GetFieldID(jresdetect,"picarray","[Lcom/**/smallpic;");
     
     //将前面处理的结果放到当前的结构体中
     jobject detectres=env->NewObject(jresdetect,env->GetMethodID(jresdetect,"<init>","()V"));
@@ -210,6 +210,32 @@ JNIEXPORT jobject JNICALL Java_com_kitchen_recognition_constant_Recognition_Send
     
     
     return detectres;
+    
+    
+    
+    
+    //2020/1/8 此时detectres已经是一个包含结构体数组的结构体，如果反过来需要获取其中的数据，则
+    
+    //例如希望拿到其中的相应地crest对象，是一个结构体数组
+    
+    //首先先拿到该对象中的crest对象，拿到了这个jobject，但是没有指定jobject的类型，所以要进行强转
+    jobjectArray rectReverse=(jobjectArray)env->GetObjectField(detectres,jcrest);
+    
+    jobjectArray tmprect=env->NewObjectArray(env->GetArrayLength(rectReverse),jrect,NULL);
+    
+    //进行强转
+    tmprect=rectReverse;
+    
+    //获取其中的元素时需要指定元素的类型
+    jobject tects=env->NewObject(jrect,env->GetMethodID(jrect, "<init>", "()V"));
+    
+    //获取结构体的元素
+    jobject testjavarect=env->GetObjectArrayElement(tmprect,0);
+    
+    //强转
+    tects=testjavarect;
+    
+    cout<<"rect value is "<<env->GetIntField(tects,jx)<<endl;
     
 }
 
