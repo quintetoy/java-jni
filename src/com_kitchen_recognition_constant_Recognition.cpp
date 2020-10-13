@@ -14,6 +14,8 @@ using namespace std;
 //
 //函数实现
 
+//注意，通过入参传递进来的bytearray或者intarray数组，或者string，需要将当前传递的内存进行释放，调用的函数为 env->ReleaseStringUTFChars(frameID, frameid);   env->ReleaseByteArrayElements(jba,(jbyte*)bytedata,NULL);
+
 
 JNIEXPORT void JNICALL Java_com_kitchen_recognition_constant_Recognition_PushFrame
 (JNIEnv *env, jobject obj, jlong cameraID, jstring  frameID,jbyteArray pic){
