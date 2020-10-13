@@ -10,6 +10,7 @@ extern "C" {
 /*
  */
 
+//2020/10/13
 JNIEXPORT void JNICALL Java_com_kitchen_recognition_constant_Recognition_PushFrame
 (JNIEnv *, jobject , jlong , jstring ,jbyteArray);
 
